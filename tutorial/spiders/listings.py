@@ -8,12 +8,23 @@ from scrapy_splash import SplashRequest
 class ListingsSpider(scrapy.Spider):
     name = 'listings'
     allowed_domains = ['www.centris.ca']
+    
+    http_user='user'
+    http_pass='userpass'
+
     positions = {
             "startPosition": 0
         }
     uck = ""
     script = """
                 function main(splash, args)
+                      splash:on_request(function(request) 
+                        if request.url:find('css') then 
+                            request.abort()    
+                        end
+                    end)
+                    splash.js_enabled = false
+                    splash.images_enabled = false
                     assert(splash:go(args.url))
                     assert(splash:wait(0.5))
                     return {
